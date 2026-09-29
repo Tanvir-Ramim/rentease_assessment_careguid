@@ -3,6 +3,7 @@ import { catchAsync } from "../../utils/catchAsync";
 import { sendResponse } from "../../utils/sendResponse";
 import httpStatus from "http-status";
 import { authServices } from "./auth.service";
+import appError from "../../utils/appError";
 const registerController = catchAsync(async (req: Request, res: Response) => {
   const payload = req.body;
   const user = await authServices.registerAuthService(payload);
@@ -23,13 +24,13 @@ const loginUserController = catchAsync(async (req: Request, res: Response) => {
     httpOnly: true,
     secure: false,
     sameSite: "lax",
-    maxAge: 1000 * 60 * 60 * 24, 
+    maxAge: 1000 * 60 * 60 * 24,
   });
   res.cookie("refreshToken", refreshToken, {
     httpOnly: true,
     secure: false,
     sameSite: "lax",
-    maxAge: 1000 * 60 * 60 * 24 * 7, 
+    maxAge: 1000 * 60 * 60 * 24 * 7,
   });
 
   sendResponse(res, {
@@ -40,7 +41,65 @@ const loginUserController = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
+const getMeController = catchAsync(async (req: Request, res: Response) => {
+  const user = await authServices.getMeService(req.user!.id);
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "User retrieved successfully",
+    data: user,
+  });
+});
+
+const refreshTokenController = catchAsync(
+  async (req: Request, res: Response) => {
+    const refreshToken = req.cookies.refreshToken;
+    if (!refreshToken) {
+      throw new appError("You are not logged in", httpStatus.UNAUTHORIZED);
+    }
+    const { accessToken } =
+      await authServices.refreshTokenService(refreshToken);
+
+    res.cookie("accessToken", accessToken, {
+      httpOnly: true,
+      secure: false,
+      sameSite: "lax",
+      maxAge: 1000 * 60 * 60 * 24,
+    });
+
+    sendResponse(res, {
+      success: true,
+      statusCode: httpStatus.OK,
+      message: "Token Refreshed Successfully",
+      data: {
+        accessToken,
+      },
+    });
+  },
+);
+
+const logoutController = catchAsync(async (req: Request, res: Response) => {
+  const cookieOptions = {
+    httpOnly: true,
+    secure: false,
+    sameSite: "lax" as const,
+  };
+
+  res.clearCookie("accessToken", cookieOptions);
+  res.clearCookie("refreshToken", cookieOptions);
+
+  sendResponse(res, {
+    success: true,
+    statusCode: httpStatus.OK,
+    message: "Logged out successfully",
+  });
+});
+
 export const AuthControllers = {
   registerController,
   loginUserController,
+  getMeController,
+  refreshTokenController,
+  logoutController,
 };

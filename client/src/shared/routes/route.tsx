@@ -3,11 +3,16 @@ import Layout from "../layout/Layout";
 import Dashboard from "../../pages/dashboard/container/Dashboard";
 import Login from "../../pages/login/container/login";
 import Register from "../../pages/register/container/Register";
+import AuthChecker from "../middleware/AuthChecker";
 
 const Router = createBrowserRouter([
   {
-    path: "/dashbaord",
-    element: <Layout />,
+    path: "/",
+    element: (
+      <AuthChecker>
+        <Layout />
+      </AuthChecker>
+    ),
     children: [
       {
         index: true,

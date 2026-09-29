@@ -4,14 +4,17 @@ import { User } from "./auth.model";
 import appError from "../../utils/appError";
 import config from "../../config";
 import httpStatus from "http-status";
-import { SignOptions } from "jsonwebtoken";
+import { JwtPayload, SignOptions } from "jsonwebtoken";
 import { jwtUtils } from "../../utils/jwt";
 const registerAuthService = async (payload: IUser) => {
   const { name, email, password, role } = payload;
 
   const existingUser = await User.findOne({ email });
   if (existingUser) {
-    throw new appError("User Aleady Exist with this email, try another email", httpStatus.NOT_FOUND);
+    throw new appError(
+      "User Aleady Exist with this email, try another email",
+      httpStatus.NOT_FOUND,
+    );
   }
 
   const hashedPassword = await bcrypt.hash(
@@ -72,9 +75,50 @@ const loginAuthService = async (payload: ILoginUser) => {
   };
 };
 
+const getMeService = async (userId: string) => {
+  const user = await User.findById(userId).select("name email role");
+  if (!user) {
+    throw new appError("User not found", httpStatus.NOT_FOUND);
+  }
+  return user;
+};
 
+const refreshTokenService = async (refreshToken: string) => {
+  const verifiedRefreshToken = jwtUtils.verifyToken(
+    refreshToken,
+    config.jwt_refresh_secret,
+  );
 
+  if (!verifiedRefreshToken.success) {
+    throw new Error(verifiedRefreshToken.error);
+  }
+
+  const { id } = verifiedRefreshToken.data as JwtPayload;
+
+  const user = await User.findById(id);
+
+  if (!user) {
+    throw new Error("User not found!");
+  }
+
+  const jwtPayload = {
+    id: user._id.toString(),
+    name: user.name,
+    email: user.email,
+    role: user.role,
+  };
+
+  const accessToken = jwtUtils.createToken(
+    jwtPayload,
+    config.jwt_access_secret,
+    config.jwt_access_expires_in as SignOptions,
+  );
+
+  return { accessToken };
+};
 export const authServices = {
   registerAuthService,
   loginAuthService,
+  getMeService,
+  refreshTokenService,
 };

@@ -27,4 +27,4 @@ router.get(
   DashboardControllers.getTopUnpaid,
 );
 
-export const DashboardRoutes = router;
+export const dashboardRoutes = router;

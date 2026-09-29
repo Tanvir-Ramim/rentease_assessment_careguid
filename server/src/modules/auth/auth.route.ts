@@ -2,6 +2,7 @@ import { Router } from "express";
 import { AuthControllers } from "./auth.controller";
 import { validateRequest } from "../../middlewares/validateRequest";
 import { createUserValidationZod, loginValidationZod } from "./auth.validation";
+import { auth } from "../../middlewares/authRoleChecker";
 
 const router = Router();
 
@@ -16,5 +17,11 @@ router.post(
   validateRequest(loginValidationZod),
   AuthControllers.loginUserController,
 );
+
+router.post("/refresh-token", AuthControllers.refreshTokenController);
+
+router.get("/me", auth("admin", "manager"), AuthControllers.getMeController);
+
+router.post("/logout", AuthControllers.logoutController);
 
 export const authRoutes = router;
