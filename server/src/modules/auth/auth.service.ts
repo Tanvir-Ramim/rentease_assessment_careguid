@@ -11,7 +11,7 @@ const registerAuthService = async (payload: IUser) => {
 
   const existingUser = await User.findOne({ email });
   if (existingUser) {
-    throw new appError("User Not Found. Create New User", httpStatus.NOT_FOUND);
+    throw new appError("User Aleady Exist with this email, try another email", httpStatus.NOT_FOUND);
   }
 
   const hashedPassword = await bcrypt.hash(

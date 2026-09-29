@@ -12,7 +12,12 @@ const userSchema = new Schema<IUser>(
       trim: true,
     },
     password: { type: String, required: true, select: false },
-    role: { type: String, enum: ["admin", "manager"], required: true },
+    role: {
+      type: String,
+      enum: ["admin", "manager"],
+      required: true,
+      default: "manager",
+    },
   },
   { timestamps: true },
 );
