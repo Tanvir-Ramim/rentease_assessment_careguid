@@ -12,3 +12,22 @@ export type TManager = {
   name: string;
   email: string;
 };
+
+export type TUnit = {
+  _id: string;
+  property: string;
+  unitNumber: string;
+  floor: number;
+  monthlyRent: number;
+  status: "vacant" | "occupied";
+};
+
+export type TPropertyDetails = {
+  _id: string;
+  name: string;
+  address: string;
+  city: string;
+  managers: TManager[];
+  totalUnits: number;
+  occupiedUnits: number;
+};

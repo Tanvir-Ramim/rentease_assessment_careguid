@@ -1,4 +1,3 @@
-
 import httpStatus from "http-status";
 import { Types } from "mongoose";
 import appError from "../../utils/appError";
@@ -8,7 +7,6 @@ import { Unit } from "./unit.model";
 import { IUnit } from "./unit.interface";
 
 type AuthUser = { id: string; role: "admin" | "manager" };
-
 
 const checkPropertyAccess = async (propertyId: string, user: AuthUser) => {
   if (!Types.ObjectId.isValid(propertyId)) {
@@ -23,7 +21,6 @@ const checkPropertyAccess = async (propertyId: string, user: AuthUser) => {
     throw new appError("Property not found", httpStatus.NOT_FOUND);
   }
 };
-
 
 const findUnitWithAccess = async (id: string, user: AuthUser) => {
   if (!Types.ObjectId.isValid(id)) {
@@ -79,12 +76,12 @@ const getAllUnitsService = async (
   if (query.status) filter.status = query.status;
 
   const result = await Unit.aggregate([
-    await propertyScopeMatch(user), 
-    { $match: filter }, 
+    await propertyScopeMatch(user),
+    { $match: filter },
     {
       $facet: {
         data: [
-          { $sort: { unitNumber: 1 } },
+          { $sort: { createdAt: -1, _id: -1 } },
           { $skip: skip },
           { $limit: limit },
           {

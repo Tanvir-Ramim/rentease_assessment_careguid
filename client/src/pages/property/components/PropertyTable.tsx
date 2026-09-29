@@ -1,5 +1,4 @@
 /* eslint-disable react-hooks/set-state-in-effect */
-// pages/property/components/PropertyTable.tsx
 import { useState, useEffect } from "react";
 
 import Swal from "sweetalert2";
@@ -18,6 +17,7 @@ import type { TPageDetails } from "../../../shared/utils/contents";
 import PropertyTableSkeleton from "./PropertyTableSkeleton";
 import AssignManagersModal from "./AssignManagersModal ";
 import PaginationSection from "../../../shared/components/PaginationSection";
+import { Link } from "react-router-dom";
 
 type Props = {
   isAdmin: boolean;
@@ -115,7 +115,7 @@ const PropertyTable = ({ isAdmin, refreshKey }: Props) => {
     }
   };
 
-  const columns = isAdmin ? 6 : 4;
+  const columns = isAdmin ? 6 : 5;
 
   return (
     <div>
@@ -138,6 +138,7 @@ const PropertyTable = ({ isAdmin, refreshKey }: Props) => {
                 <th className="md:p-4 truncate p-2">Managers</th>
                 {isAdmin && <th className="md:p-4 truncate p-2">Assign</th>}
                 {isAdmin && <th className="md:p-4 p-2 rounded-r-lg">Action</th>}
+                <th className="md:p-4 truncate p-2">Details</th>
               </tr>
             </thead>
             <tbody>
@@ -205,6 +206,14 @@ const PropertyTable = ({ isAdmin, refreshKey }: Props) => {
                         </div>
                       </td>
                     )}
+                    <td className="md:p-4 truncate p-2">
+                      <Link
+                        to={`/properties/${property._id}`}
+                        className="inline-block px-3 rounded cursor-pointer text-sm bg-[#4640DE] hover:opacity-90 text-white font-medium py-1 transition duration-200"
+                      >
+                        Details
+                      </Link>
+                    </td>
                   </tr>
                 ))
               )}

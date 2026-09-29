@@ -1,4 +1,3 @@
-
 import httpStatus from "http-status";
 import { Types } from "mongoose";
 import appError from "../../utils/appError";
@@ -82,17 +81,12 @@ const getSinglePropertyService = async (id: string, user: AuthUser) => {
     throw new appError("Property not found", httpStatus.NOT_FOUND);
   }
 
-  const units = await Unit.find({ property: id }).lean();
-  const occupiedUnits = units.filter(
-    (u: any) => u.status === "occupied",
-  ).length;
+  const [totalUnits, occupiedUnits] = await Promise.all([
+    Unit.countDocuments({ property: id }),
+    Unit.countDocuments({ property: id, status: "occupied" }),
+  ]);
 
-  return {
-    ...property,
-    units,
-    totalUnits: units.length,
-    occupiedUnits,
-  };
+  return { ...property, totalUnits, occupiedUnits };
 };
 const updatePropertyService = async (
   id: string,

@@ -5,6 +5,7 @@ import Login from "../../pages/login/container/login";
 import Register from "../../pages/register/container/Register";
 import AuthChecker from "../middleware/AuthChecker";
 import Property from "../../pages/property/container/Property";
+import PropertyDetails from "../../pages/singleProperty/container/PropertyDetails";
 
 const Router = createBrowserRouter([
   {
@@ -20,9 +21,10 @@ const Router = createBrowserRouter([
         element: <Dashboard></Dashboard>,
       },
       {
-        path: "/properites",
+        path: "/properties",
         element: <Property></Property>,
       },
+      { path: "properties/:id", element: <PropertyDetails /> },
     ],
   },
   {

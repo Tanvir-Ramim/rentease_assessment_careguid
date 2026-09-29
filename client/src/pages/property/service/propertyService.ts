@@ -43,3 +43,6 @@ export const assignManagers = async (id: string, managerIds: string[]) => {
   const res = await Api.patch(`/properties/${id}/managers`, { managerIds });
   return res.data;
 };
+
+
+

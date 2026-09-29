@@ -5,7 +5,7 @@ export const navdata = [
   },
   {
     title: "Properites",
-    link: "/properites",
+    link: "/properties",
   },
   {
     title: "Tenants",
