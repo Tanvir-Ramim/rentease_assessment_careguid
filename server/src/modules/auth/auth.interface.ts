@@ -6,3 +6,8 @@ export interface IUser {
   createdAt: Date;
   updatedAt: Date;
 }
+export interface ILoginUser {
+  email: string;
+  password: string;
+
+}

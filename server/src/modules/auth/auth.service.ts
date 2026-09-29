@@ -1,9 +1,11 @@
 import bcrypt from "bcryptjs";
-import { IUser } from "./auth.interface";
+import { ILoginUser, IUser } from "./auth.interface";
 import { User } from "./auth.model";
 import appError from "../../utils/appError";
 import config from "../../config";
 import httpStatus from "http-status";
+import { SignOptions } from "jsonwebtoken";
+import { jwtUtils } from "../../utils/jwt";
 const registerAuthService = async (payload: IUser) => {
   const { name, email, password, role } = payload;
 
@@ -32,6 +34,47 @@ const registerAuthService = async (payload: IUser) => {
   };
 };
 
+const loginAuthService = async (payload: ILoginUser) => {
+  const { email, password } = payload;
+  const user = await User.findOne({ email }).select("password");
+  if (!user) {
+    throw new appError("User Not Found. Create New User", httpStatus.NOT_FOUND);
+  }
+
+  const isPasswordMatched = await bcrypt.compare(password, user.password);
+
+  if (!isPasswordMatched) {
+    throw new appError("Password is incrorrects", httpStatus.UNAUTHORIZED);
+  }
+
+  const jwtPayload = {
+    id: user.id,
+    name: user.name,
+    email: user.email,
+    role: user.role,
+  };
+
+  const accessToken = jwtUtils.createToken(
+    jwtPayload,
+    config.jwt_access_secret,
+    config.jwt_access_expires_in as SignOptions,
+  );
+
+  const refreshToken = jwtUtils.createToken(
+    jwtPayload,
+    config.jwt_refresh_secret,
+    config.jwt_refresh_expires_in as SignOptions,
+  );
+
+  return {
+    accessToken,
+    refreshToken,
+  };
+};
+
+
+
 export const authServices = {
   registerAuthService,
+  loginAuthService,
 };
