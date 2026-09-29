@@ -14,7 +14,7 @@ const modulesRoutes = [
     function: authRoutes,
   },
   {
-    path: "/property",
+    path: "/properties",
     function: propertyRoutes,
   },
   {

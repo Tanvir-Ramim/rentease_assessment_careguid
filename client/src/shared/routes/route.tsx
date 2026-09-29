@@ -4,6 +4,7 @@ import Dashboard from "../../pages/dashboard/container/Dashboard";
 import Login from "../../pages/login/container/login";
 import Register from "../../pages/register/container/Register";
 import AuthChecker from "../middleware/AuthChecker";
+import Property from "../../pages/property/container/Property";
 
 const Router = createBrowserRouter([
   {
@@ -17,6 +18,10 @@ const Router = createBrowserRouter([
       {
         index: true,
         element: <Dashboard></Dashboard>,
+      },
+      {
+        path: "/properites",
+        element: <Property></Property>,
       },
     ],
   },

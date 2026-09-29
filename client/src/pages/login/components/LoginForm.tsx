@@ -22,7 +22,7 @@ const LoginForm = () => {
     try {
       const res = await Api.post("/auth/login", { email, password });
       toast.success(res.data?.message || "Logged in successfully");
-      navigate("/dashbaord");
+      navigate("/");
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       toast.error(

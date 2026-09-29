@@ -116,9 +116,14 @@ const refreshTokenService = async (refreshToken: string) => {
 
   return { accessToken };
 };
+
+const getManagersService = async () => {
+  return User.find({ role: "manager" }).select("name email").sort({ name: 1 });
+};
 export const authServices = {
   registerAuthService,
   loginAuthService,
   getMeService,
   refreshTokenService,
+  getManagersService,
 };

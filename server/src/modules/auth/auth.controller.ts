@@ -96,10 +96,24 @@ const logoutController = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
+const getManagersController = catchAsync(
+  async (req: Request, res: Response) => {
+    const data = await authServices.getManagersService();
+
+    sendResponse(res, {
+      statusCode: httpStatus.OK,
+      success: true,
+      message: "Managers retrieved successfully",
+      data,
+    });
+  },
+);
+
 export const AuthControllers = {
   registerController,
   loginUserController,
   getMeController,
   refreshTokenController,
   logoutController,
+  getManagersController,
 };

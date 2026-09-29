@@ -18,6 +18,8 @@ router.post(
   AuthControllers.loginUserController,
 );
 
+router.get("/managers", auth("admin"), AuthControllers.getManagersController);
+
 router.post("/refresh-token", AuthControllers.refreshTokenController);
 
 router.get("/me", auth("admin", "manager"), AuthControllers.getMeController);
