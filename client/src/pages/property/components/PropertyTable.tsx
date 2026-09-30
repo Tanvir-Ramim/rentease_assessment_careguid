@@ -14,10 +14,11 @@ import {
   getProperties,
 } from "../service/propertyService";
 import type { TPageDetails } from "../../../shared/utils/contents";
-import PropertyTableSkeleton from "./PropertyTableSkeleton";
+
 import AssignManagersModal from "./AssignManagersModal ";
 import PaginationSection from "../../../shared/components/PaginationSection";
 import { Link } from "react-router-dom";
+import TableSkeleton from "../../../shared/components/TableSkeleton";
 
 type Props = {
   isAdmin: boolean;
@@ -143,7 +144,7 @@ const PropertyTable = ({ isAdmin, refreshKey }: Props) => {
             </thead>
             <tbody>
               {loading ? (
-                <PropertyTableSkeleton columns={columns} rows={10} />
+                <TableSkeleton columns={columns} rows={10} />
               ) : error ? (
                 <tr>
                   <td

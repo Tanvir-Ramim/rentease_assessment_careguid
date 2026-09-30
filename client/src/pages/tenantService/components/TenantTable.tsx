@@ -234,7 +234,7 @@ const TenantTable = () => {
                       <div className="space-y-2">
                         <button
                           onClick={() => setEditTenant(tenant)}
-                          className="px-7 rounded cursor-pointer text-sm bg-blue-500 hover:bg-blue-600 text-white font-medium py-1 transition duration-200"
+                          className="px-7 rounded cursor-pointer text-sm bg-blue-500 hover:bg-[] text-white font-medium py-1 transition duration-200"
                         >
                           Edit
                         </button>

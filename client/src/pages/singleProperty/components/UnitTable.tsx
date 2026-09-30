@@ -5,7 +5,6 @@ import { useState, useEffect } from "react";
 import Swal from "sweetalert2";
 import UnitFilter from "./UnitFilter";
 import UnitFormModal from "./UnitFormModal";
-import UnitTableSkeleton from "./UnitTableSkeleton";
 
 import PaymentFormModal from "../../payment/components/PaymentFormModal";
 
@@ -15,6 +14,7 @@ import { deleteUnit, getErrorMessage, getUnits } from "../service/unitService";
 import type { TPageDetails } from "../../../shared/utils/contents";
 import PaginationSection from "../../../shared/components/PaginationSection";
 import TenantFormModal from "../../tenantService/components/TenantFormModal";
+import TableSkeleton from "../../../shared/components/TableSkeleton";
 
 type Props = {
   propertyId: string;
@@ -138,7 +138,7 @@ const UnitTable = ({ propertyId, refreshKey, onChanged }: Props) => {
             </thead>
             <tbody>
               {loading ? (
-                <UnitTableSkeleton columns={COLUMNS} rows={6} />
+                <TableSkeleton columns={COLUMNS} rows={6} />
               ) : error ? (
                 <tr>
                   <td

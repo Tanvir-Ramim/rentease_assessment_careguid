@@ -36,7 +36,6 @@ const seed = async () => {
   await mongoose.connect(config.database_url as string);
   console.log("MongoDB connected");
 
-
   await User.deleteMany({
     email: {
       $in: ["admin@rentease.com", "tanvir@rentease.com", "ramim@rentease.com"],
@@ -49,20 +48,23 @@ const seed = async () => {
     Payment.deleteMany({}),
   ]);
 
-
   const password = await bcrypt.hash(
     "123456",
     Number(config.bcrypt_salt_rounds),
   );
 
   const users = await User.insertMany([
-    { name: "Admin User", email: "admin@rentease.com", password, role: "admin" },
+    {
+      name: "Admin User",
+      email: "admin@rentease.com",
+      password,
+      role: "admin",
+    },
     { name: "Tanvir", email: "tanvir@rentease.com", password, role: "manager" },
     { name: "Ramim", email: "ramim@rentease.com", password, role: "manager" },
   ]);
   const tanvir = users[1]!;
   const ramim = users[2]!;
-
 
   const properties = await Property.insertMany(
     propertyNames.map((name, i) => ({
@@ -73,14 +75,13 @@ const seed = async () => {
     })),
   );
 
-
   const unitDocs = [];
   let u = 0;
   for (let p = 0; p < properties.length; p++) {
     const property = properties[p]!;
-    const letter = String.fromCharCode(65 + p); 
+    const letter = String.fromCharCode(65 + p);
     for (let j = 0; j < 20; j++) {
-      const floor = Math.floor(j / 4) + 1; 
+      const floor = Math.floor(j / 4) + 1;
       const n = (j % 4) + 1;
       unitDocs.push({
         property: property._id,
@@ -111,7 +112,6 @@ const seed = async () => {
     })),
   );
 
-
   const months = Array.from({ length: 9 }, (_, i) =>
     new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth() - (8 - i), 1))
       .toISOString()
@@ -126,7 +126,7 @@ const seed = async () => {
     for (let m = 0; m < months.length; m++) {
       const month = months[m]!;
       const isCurrentMonth = m === months.length - 1;
-      if (isCurrentMonth && t % 7 >= 4) continue; 
+      if (isCurrentMonth && t % 7 >= 4) continue;
 
       paymentDocs.push({
         tenant: tenant._id,
@@ -144,7 +144,6 @@ const seed = async () => {
   console.log(
     `Seeded 1 admin, 2 managers, ${properties.length} properties, ${units.length} units, ${tenants.length} tenants, ${paymentDocs.length} payments`,
   );
-  await mongoose.disconnect();
 };
 
 seed().catch((err) => {

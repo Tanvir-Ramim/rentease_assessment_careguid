@@ -94,7 +94,7 @@ const Header = ({
             <div className="flex items-center gap-3 cursor-pointer">
               <div className="leading-tight font-medium">
                 {user?.email}
-                <p className="text-xs mt-0.5 pt-1 text-gray-500">
+                <p className="text-xs capitalize mt-0.5 pt-1 text-gray-500">
                   {user?.role}
                 </p>
               </div>
