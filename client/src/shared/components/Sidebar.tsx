@@ -3,8 +3,8 @@ import { NavLink } from "react-router-dom";
 import { HiOutlineLogout } from "react-icons/hi";
 import { TiArrowLeft } from "react-icons/ti";
 import logo from "../../shared/assets/Logo.png";
-import { navdata } from "../utils/contents";
 import { logout } from "../utils/logout";
+import { navdata } from "../utils/navdata";
 
 interface SidebarProps {
   sidebarOpen: boolean;
@@ -53,12 +53,16 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
         </button>
       </div>
 
-
       <div className="flex flex-1 items-center">
         <nav className="w-full px-4">
           <ul className="flex flex-col gap-2">
             {navdata?.map((item) => (
-              <SidebarItem to={item.link} key={item.title} label={item.title} />
+              <SidebarItem
+                to={item.link}
+                icon={item?.icon}
+                key={item.title}
+                label={item.title}
+              />
             ))}
           </ul>
         </nav>
@@ -81,7 +85,7 @@ export default Sidebar;
 
 interface SidebarItemProps {
   to: string;
-  icon?: React.ReactNode;
+  icon: React.ReactNode;
   label: string;
   end?: boolean;
 }

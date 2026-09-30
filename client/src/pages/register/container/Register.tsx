@@ -1,4 +1,4 @@
-import { BiHome } from "react-icons/bi";
+
 import { BsArrowRight } from "react-icons/bs";
 import { Link } from "react-router-dom";
 import loginBG from "../../login/assets/loginImage.png";
@@ -26,7 +26,7 @@ const Register = () => {
 
           <div className="text-center mb-6">
             <h1 className="text-3xl font-bold text-gray-900">
-              Welcome to Quick Hire 👋
+              Welcome to RentEase 👋
             </h1>
 
             <p className="mt-2 text-sm text-gray-500">
@@ -52,14 +52,6 @@ const Register = () => {
                 <BsArrowRight size={16} />
               </Link>
             </p>
-
-            <Link
-              to="/"
-              className="inline-flex items-center gap-2 rounded-md border border-gray-200 px-4 py-2 text-gray-700 hover:bg-gray-50 hover:text-[#034DA2] transition-all"
-            >
-              <BiHome size={16} />
-              Back to Home
-            </Link>
           </div>
         </div>
       </div>

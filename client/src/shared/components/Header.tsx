@@ -1,9 +1,8 @@
-import { Link } from "react-router-dom";
-import logo from "../../shared/assets/Logo copy.png";
+import logo from "../../shared/assets/Logo.png";
 import { LuSquareMenu } from "react-icons/lu";
 
 import { useState, useEffect, useRef } from "react";
-
+import useGetMe from "../hooks/useGetMe";
 
 const Header = ({
   setSidebarOpen,
@@ -14,7 +13,7 @@ const Header = ({
 }) => {
   const now = new Date();
   const hours = now.getHours();
-
+  const { user } = useGetMe();
   const getGreeting = () => {
     if (hours >= 5 && hours < 12) return "Good Morning";
     if (hours >= 12 && hours < 17) return "Good Afternoon";
@@ -30,13 +29,11 @@ const Header = ({
 
   const [profileOpen, setProfileOpen] = useState(false);
 
-
   const profileRef = useRef<HTMLDivElement>(null);
 
   const toggleProfile = () => {
     setProfileOpen(!profileOpen);
   };
-
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -62,7 +59,10 @@ const Header = ({
         <div className="flex items-center">
           <div className="lg:flex flex-col hidden">
             <h1 className="text-lg font-semibold text-gray-800">
-              {getGreeting()} <span className="font-bold">Admin</span>
+              {getGreeting()}{" "}
+              <span className="font-bold">
+                {user?.name?.split(" ")[0]?.trim()}
+              </span>
             </h1>
             <p className="text-sm text-gray-500">{formattedDate}</p>
           </div>
@@ -79,33 +79,27 @@ const Header = ({
             >
               <LuSquareMenu size={25} />
             </button>
-
-            <Link className="block pl-1.5 shrink-0 lg:hidden" to="/">
-              <img src={logo} alt="Logo" className="w-28" />
-            </Link>
+            <div className="flex items-center gap-1 ml-1">
+              <img src={logo} alt="Logo" className="w-8" />
+              <span className="font-bold">RentEase</span>
+            </div>
           </div>
         </div>
 
         {/* Right Desktop */}
         <div className="hidden xl:flex items-center gap-6">
           <div className="flex items-center gap-4">
-            <div className="cursor-pointer">
-              {/* <IconSvg
-                name={"notification"}
-                className="w-6 h-5 text-gray-600"
-              /> */}
-              
-            </div>
-
             <div className="h-8 w-px bg-gray-300"></div>
 
             <div className="flex items-center gap-3 cursor-pointer">
               <div className="leading-tight font-medium">
-                admin@gmail.com
-                <p className="text-xs mt-0.5 pt-1 text-gray-500">Admin</p>
+                {user?.email}
+                <p className="text-xs mt-0.5 pt-1 text-gray-500">
+                  {user?.role}
+                </p>
               </div>
               <img
-                src="https://i.pravatar.cc/150?img=12"
+                src="https://hds.hel.fi/images/foundation/visual-assets/placeholders/user-image-l@2x.png"
                 alt="profile"
                 className="w-9 h-9 rounded-full object-cover"
               />
@@ -124,9 +118,9 @@ const Header = ({
 
           <button className="cursor-pointer" onClick={toggleProfile}>
             <img
-              src="https://i.pravatar.cc/150?img=12"
+              src="https://hds.hel.fi/images/foundation/visual-assets/placeholders/user-image-l@2x.png"
               alt="profile"
-              className="h-7 w-7 rounded-full border border-[#CDCFD2] object-cover"
+              className="h-8 w-8 rounded-full border border-[#CDCFD2] object-cover"
             />
           </button>
         </div>
@@ -144,12 +138,13 @@ const Header = ({
         <div className="flex items-center gap-3 p-4">
           <div className="flex items-center gap-3 cursor-pointer">
             <img
-              src="https://i.pravatar.cc/150?img=12"
+              src="https://hds.hel.fi/images/foundation/visual-assets/placeholders/user-image-l@2x.png"
               alt="profile"
               className="w-11 h-11 rounded-full object-cover"
             />
             <div className="leading-tight mt-1">
-              Tanvir Hossan <span className="text-xs">(Developer)</span>
+              {user?.name}{" "}
+              <span className="text-xs capitalize">({user?.role})</span>
               <p className="text-sm text-gray-500">{formattedDate}</p>
             </div>
           </div>

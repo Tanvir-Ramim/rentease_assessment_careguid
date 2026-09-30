@@ -19,7 +19,7 @@ const Login = () => {
         <div className="w-full max-w-md px-8">
           <img
             src={logo}
-            alt="FixIt Logo"
+            alt="RentEase Logo"
             className="mx-auto mb-6 object-contain"
           />
 
@@ -27,7 +27,7 @@ const Login = () => {
             <h1 className="text-3xl font-bold text-gray-900">Welcome Back</h1>
 
             <p className="mt-2 text-gray-500">
-              Sign in to access your FixIt account and manage your services.
+              Sign in to access your RentEase account and manage your services.
             </p>
 
             <h2 className="mt-6 text-xl font-semibold text-[#034DA2]">
