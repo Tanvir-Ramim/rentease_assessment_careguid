@@ -1,4 +1,3 @@
-
 import httpStatus from "http-status";
 import { Types } from "mongoose";
 import appError from "../../utils/appError";
@@ -83,7 +82,6 @@ const getAllPaymentsService = async (
     throw new appError("Month must be like 2026-10", httpStatus.BAD_REQUEST);
   }
 
-
   const [year, mon] = month.split("-").map(Number);
   const monthStart = new Date(Date.UTC(year!, mon! - 1, 1));
   const nextMonthStart = new Date(Date.UTC(year!, mon!, 1));
@@ -99,11 +97,12 @@ const getAllPaymentsService = async (
     filter.property = new Types.ObjectId(query.property);
   }
 
-
-  const statusMatch = query.status ? [{ $match: { status: query.status } }] : [];
+  const statusMatch = query.status
+    ? [{ $match: { status: query.status } }]
+    : [];
 
   const result = await Tenant.aggregate([
-    await propertyScopeMatch(user), 
+    await propertyScopeMatch(user),
     { $match: filter },
     {
       $lookup: {
@@ -116,11 +115,11 @@ const getAllPaymentsService = async (
     },
     { $unwind: { path: "$payment", preserveNullAndEmptyArrays: true } },
     { $addFields: { status: { $ifNull: ["$payment.status", "unpaid"] } } },
-    ...statusMatch, 
+    ...statusMatch,
     {
       $facet: {
         data: [
-          { $sort: { name: 1 } },
+          { $sort: { "payment.createdAt": -1, name: 1 } },
           { $skip: skip },
           { $limit: limit },
           {
@@ -180,7 +179,7 @@ const getUnpaidTenantsService = async (
   }
   const month = query.month;
 
-  const filter: Record<string, unknown> = { moveOutDate: null }; 
+  const filter: Record<string, unknown> = { moveOutDate: null };
   if (query.property) {
     if (!Types.ObjectId.isValid(query.property)) {
       throw new appError("Property not found", httpStatus.NOT_FOUND);
@@ -189,8 +188,8 @@ const getUnpaidTenantsService = async (
   }
 
   const result = await Tenant.aggregate([
-    await propertyScopeMatch(user), 
-    { $match: filter }, 
+    await propertyScopeMatch(user),
+    { $match: filter },
     {
       $lookup: {
         from: "payments",

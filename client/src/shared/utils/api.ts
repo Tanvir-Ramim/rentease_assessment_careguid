@@ -1,8 +1,8 @@
 import axios from "axios";
 
 const Api = axios.create({
-  baseURL: `http://localhost:5000/api/v1`,
-  // baseURL: `https://renteasecare-server.vercel.app/api/v1`,
+  // baseURL: `http://localhost:5000/api/v1`,
+  baseURL: `https://renteasecare-server.vercel.app/api/v1`,
 
   withCredentials: true,
 });

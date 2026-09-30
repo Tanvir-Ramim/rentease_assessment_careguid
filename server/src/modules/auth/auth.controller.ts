@@ -64,8 +64,8 @@ const refreshTokenController = catchAsync(
 
     res.cookie("accessToken", accessToken, {
       httpOnly: true,
-      secure: false,
-      sameSite: "lax",
+      secure: true,
+      sameSite: "none",
       maxAge: 1000 * 60 * 60 * 24,
     });
 
@@ -83,8 +83,8 @@ const refreshTokenController = catchAsync(
 const logoutController = catchAsync(async (req: Request, res: Response) => {
   const cookieOptions = {
     httpOnly: true,
-    secure: false,
-    sameSite: "lax" as const,
+    secure: true,
+    sameSite: "none" as const,
   };
 
   res.clearCookie("accessToken", cookieOptions);
