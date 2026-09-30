@@ -1,6 +1,6 @@
 # RentEase
 
-RentEase is a web portal for a property management company. It helps manage buildings, rental units, tenants and monthly rent payments. Admins see everything, and Property Managers see only the buildings given to them.
+RentEase is a web portal for a property management app. It helps manage buildings, rental units, tenants and monthly rent payments. Admins see everything, and Property Managers see only the buildings given to them.
 
 ---
 
