@@ -1,0 +1,41 @@
+import { Router } from "express";
+import { authRoutes } from "../modules/auth/auth.route";
+import { propertyRoutes } from "../modules/property/property.route";
+import { unitRoutes } from "../modules/unit/unit.route";
+import { tenantRoutes } from "../modules/tenant/tenant.route";
+import { paymentRoutes } from "../modules/payment/payment.route";
+import { dashboardRoutes } from "../modules/dashboard/dashbaord.route";
+
+const router = Router();
+
+const modulesRoutes = [
+  {
+    path: "/auth",
+    function: authRoutes,
+  },
+  {
+    path: "/properties",
+    function: propertyRoutes,
+  },
+  {
+    path: "/unit",
+    function: unitRoutes,
+  },
+  {
+    path: "/tanant",
+    function: tenantRoutes,
+  },
+  {
+    path: "/payment",
+    function: paymentRoutes,
+  },
+  {
+    path: "/dashboard",
+    function: dashboardRoutes,
+  },
+];
+modulesRoutes.forEach((route) => {
+  router.use(route.path, route.function);
+});
+
+export default router;
