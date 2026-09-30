@@ -1,4 +1,4 @@
-// middlewares/auth.ts
+
 import httpStatus from "http-status";
 import { JwtPayload } from "jsonwebtoken";
 import { NextFunction, Request, Response } from "express";
@@ -74,8 +74,8 @@ export const auth = (...requiredRoles: Role[]) => {
 
         res.cookie("accessToken", accessToken, {
           httpOnly: true,
-          secure: false,
-          sameSite: "lax",
+          secure: true,
+          sameSite: "none",
           maxAge: 1000 * 60 * 60 * 24,
         });
       } catch {
