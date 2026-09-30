@@ -70,21 +70,28 @@ const createPaymentService = async (
   }
 };
 
+const currentMonth = () => new Date().toISOString().slice(0, 7);
+
 const getAllPaymentsService = async (
   user: AuthUser,
   query: Record<string, string | undefined>,
 ) => {
   const { page, limit, skip } = getPaging(query);
 
-  const filter: Record<string, unknown> = {};
-
-  if (query.month) {
-    if (!monthRegex.test(query.month)) {
-      throw new appError("Month must be like 2026-10", httpStatus.BAD_REQUEST);
-    }
-    filter.month = query.month;
+  const month = query.month || currentMonth();
+  if (!monthRegex.test(month)) {
+    throw new appError("Month must be like 2026-10", httpStatus.BAD_REQUEST);
   }
-  if (query.status) filter.status = query.status;
+
+
+  const [year, mon] = month.split("-").map(Number);
+  const monthStart = new Date(Date.UTC(year!, mon! - 1, 1));
+  const nextMonthStart = new Date(Date.UTC(year!, mon!, 1));
+
+  const filter: Record<string, unknown> = {
+    moveInDate: { $lt: nextMonthStart },
+    $or: [{ moveOutDate: null }, { moveOutDate: { $gte: monthStart } }],
+  };
   if (query.property) {
     if (!Types.ObjectId.isValid(query.property)) {
       throw new appError("Property not found", httpStatus.NOT_FOUND);
@@ -92,23 +99,30 @@ const getAllPaymentsService = async (
     filter.property = new Types.ObjectId(query.property);
   }
 
-  const result = await Payment.aggregate([
+
+  const statusMatch = query.status ? [{ $match: { status: query.status } }] : [];
+
+  const result = await Tenant.aggregate([
     await propertyScopeMatch(user), 
-    { $match: filter }, 
+    { $match: filter },
+    {
+      $lookup: {
+        from: "payments",
+        localField: "_id",
+        foreignField: "tenant",
+        pipeline: [{ $match: { month } }],
+        as: "payment",
+      },
+    },
+    { $unwind: { path: "$payment", preserveNullAndEmptyArrays: true } },
+    { $addFields: { status: { $ifNull: ["$payment.status", "unpaid"] } } },
+    ...statusMatch, 
     {
       $facet: {
         data: [
-          { $sort: { month: -1, _id: -1 } },
+          { $sort: { name: 1 } },
           { $skip: skip },
           { $limit: limit },
-          {
-            $lookup: {
-              from: "tenants",
-              localField: "tenant",
-              foreignField: "_id",
-              as: "tenant",
-            },
-          },
           {
             $lookup: {
               from: "units",
@@ -125,17 +139,16 @@ const getAllPaymentsService = async (
               as: "property",
             },
           },
-          { $unwind: { path: "$tenant", preserveNullAndEmptyArrays: true } },
           { $unwind: { path: "$unit", preserveNullAndEmptyArrays: true } },
           { $unwind: { path: "$property", preserveNullAndEmptyArrays: true } },
           {
             $project: {
-              tenant: "$tenant.name",
+              tenant: "$name",
               unit: "$unit.unitNumber",
               property: "$property.name",
-              month: 1,
-              amount: 1,
-              paidDate: 1,
+              month: { $literal: month },
+              amount: { $ifNull: ["$payment.amount", "$unit.monthlyRent"] },
+              paidDate: "$payment.paidDate",
               status: 1,
             },
           },

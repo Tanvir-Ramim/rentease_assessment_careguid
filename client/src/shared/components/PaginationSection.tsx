@@ -1,30 +1,49 @@
+
 interface PaginationSectionProps {
   page: number;
   setPage: (page: number | ((p: number) => number)) => void;
   totalPage: number;
 }
 
+const getPageNumbers = (page: number, totalPage: number) => {
+  if (totalPage <= 5) {
+    return Array.from({ length: totalPage }, (_, i) => i + 1);
+  }
+
+  const pages: (number | "...")[] = [1];
+  const start = Math.max(2, page - 1);
+  const end = Math.min(totalPage - 1, page + 1);
+
+  if (start > 2) pages.push("...");
+  for (let i = start; i <= end; i++) pages.push(i);
+  if (end < totalPage - 1) pages.push("...");
+
+  pages.push(totalPage);
+  return pages;
+};
+
 const PaginationSection = ({ page, setPage, totalPage }: PaginationSectionProps) => {
-  const renderPages = () => {
-    const pages = [];
-    for (let i = 1; i <= totalPage; i++) {
-      pages.push(
+  const renderPages = () =>
+    getPageNumbers(page, totalPage).map((item, index) =>
+      item === "..." ? (
+        <span key={`dots-${index}`} className="px-1 text-[#464255]">
+          ...
+        </span>
+      ) : (
         <button
-          key={i}
-          onClick={() => setPage(i)}
+          key={item}
+          onClick={() => setPage(item)}
           className={`
             @lg:px-2.5 px-1 @sm:py-1 py-0.5
             p-0.5 flex items-center @lg:text-base cursor-pointer text-xs justify-center rounded
             transition-all duration-200 ease-in-out
-            ${page === i ? "text-black border" : ""}
+            ${page === item ? "text-black border" : ""}
           `}
         >
-          {i}
+          {item}
         </button>
-      );
-    }
-    return pages;
-  };
+      ),
+    );
 
   return (
     <div className="mt-6 lg:mb-8 md:mb-7 sm:6 mb-4 md:mr-9 flex items-center @lg:space-x-3 space-x-2 text-[#464255] font-medium md:justify-end justify-center">

@@ -24,7 +24,7 @@ const loginUserController = catchAsync(async (req: Request, res: Response) => {
     httpOnly: true,
     secure: false,
     sameSite: "lax",
-    maxAge: 1000 * 60 * 60 * 24,
+    maxAge: 1000 * 10,
   });
   res.cookie("refreshToken", refreshToken, {
     httpOnly: true,
@@ -55,6 +55,7 @@ const getMeController = catchAsync(async (req: Request, res: Response) => {
 const refreshTokenController = catchAsync(
   async (req: Request, res: Response) => {
     const refreshToken = req.cookies.refreshToken;
+    console.log("ramim vai", refreshToken);
     if (!refreshToken) {
       throw new appError("You are not logged in", httpStatus.UNAUTHORIZED);
     }

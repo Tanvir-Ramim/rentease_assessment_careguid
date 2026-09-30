@@ -1,4 +1,3 @@
-
 export type TProperty = {
   _id: string;
   name: string;
@@ -13,6 +12,8 @@ export type TManager = {
   email: string;
 };
 
+export type TCurrentTenant = { _id: string; name: string; phone: string };
+
 export type TUnit = {
   _id: string;
   property: string;
@@ -20,6 +21,7 @@ export type TUnit = {
   floor: number;
   monthlyRent: number;
   status: "vacant" | "occupied";
+  currentTenant?: TCurrentTenant;
 };
 
 export type TPropertyDetails = {
@@ -30,4 +32,28 @@ export type TPropertyDetails = {
   managers: TManager[];
   totalUnits: number;
   occupiedUnits: number;
+};
+
+export type TTenant = {
+  _id: string;
+  name: string;
+  phone: string;
+  email: string;
+  unit: string; 
+  property: string; 
+  moveInDate: string;
+  moveOutDate: string | null;
+  monthlyRent: number;
+  paidThisMonth: boolean;
+};
+
+export type TPayment = {
+  _id: string;
+  tenant: string;
+  unit: string;
+  property: string;
+  month: string;
+  amount: number;
+  paidDate: string | null;
+  status: "paid" | "unpaid";
 };

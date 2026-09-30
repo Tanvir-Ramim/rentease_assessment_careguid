@@ -6,6 +6,9 @@ import Register from "../../pages/register/container/Register";
 import AuthChecker from "../middleware/AuthChecker";
 import Property from "../../pages/property/container/Property";
 import PropertyDetails from "../../pages/singleProperty/container/PropertyDetails";
+import Tenant from "../../pages/tenantService/container/Tenant";
+import Payment from "../../pages/payment/container/Payment";
+import GuestChecker from "../middleware/GuestChecker";
 
 const Router = createBrowserRouter([
   {
@@ -25,15 +28,25 @@ const Router = createBrowserRouter([
         element: <Property></Property>,
       },
       { path: "properties/:id", element: <PropertyDetails /> },
+      { path: "tenants", element: <Tenant /> },
+      { path: "payments", element: <Payment /> },
     ],
   },
   {
     path: "/login",
-    element: <Login></Login>,
+    element: (
+      <GuestChecker>
+        <Login />
+      </GuestChecker>
+    ),
   },
   {
     path: "/registration",
-    element: <Register></Register>,
+    element: (
+      <GuestChecker>
+        <Register />
+      </GuestChecker>
+    ),
   },
 ]);
 

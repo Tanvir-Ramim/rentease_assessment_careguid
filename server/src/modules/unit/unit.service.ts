@@ -85,12 +85,31 @@ const getAllUnitsService = async (
           { $skip: skip },
           { $limit: limit },
           {
+            $lookup: {
+              from: "tenants",
+              localField: "_id",
+              foreignField: "unit",
+              pipeline: [
+                { $match: { moveOutDate: null } }, 
+                { $project: { name: 1, phone: 1 } },
+              ],
+              as: "currentTenant",
+            },
+          },
+          {
+            $unwind: {
+              path: "$currentTenant",
+              preserveNullAndEmptyArrays: true,
+            },
+          },
+          {
             $project: {
               property: 1,
               unitNumber: 1,
               floor: 1,
               monthlyRent: 1,
               status: 1,
+              currentTenant: 1,
             },
           },
         ],

@@ -7,12 +7,10 @@ import { Unit } from "../unit/unit.model";
 import { Tenant } from "./tenant.model";
 import { ITenant } from "./tenant.inteface";
 
-
 type AuthUser = { id: string; role: "admin" | "manager" };
 
 const escapeRegex = (text: string) =>
   text.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-
 
 const findTenantWithAccess = async (id: string, user: AuthUser) => {
   if (!Types.ObjectId.isValid(id)) {
@@ -60,7 +58,7 @@ const createTenantService = async (
     throw error;
   }
 };
-
+const currentMonth = () => new Date().toISOString().slice(0, 7);
 const getAllTenantsService = async (
   user: AuthUser,
   query: Record<string, string | undefined>,
@@ -95,7 +93,7 @@ const getAllTenantsService = async (
   }
 
   const result = await Tenant.aggregate([
-    await propertyScopeMatch(user), 
+    await propertyScopeMatch(user),
     { $match: filter },
     {
       $facet: {
@@ -103,6 +101,15 @@ const getAllTenantsService = async (
           { $sort: { moveInDate: -1 } },
           { $skip: skip },
           { $limit: limit },
+          {
+            $lookup: {
+              from: "payments",
+              localField: "_id",
+              foreignField: "tenant",
+              pipeline: [{ $match: { month: currentMonth(), status: "paid" } }],
+              as: "payments",
+            },
+          },
           {
             $lookup: {
               from: "units",
@@ -130,6 +137,8 @@ const getAllTenantsService = async (
               property: "$property.name",
               moveInDate: 1,
               moveOutDate: 1,
+              monthlyRent: "$unit.monthlyRent",
+              paidThisMonth: { $gt: [{ $size: "$payments" }, 0] },
             },
           },
         ],
@@ -187,7 +196,7 @@ const moveOutTenantService = async (
   tenant.moveOutDate = moveOutDate;
   await tenant.save();
 
-  await Unit.findByIdAndUpdate(tenant.unit, { status: "vacant" }); // free the unit
+  await Unit.findByIdAndUpdate(tenant.unit, { status: "vacant" }); 
 
   return tenant;
 };
