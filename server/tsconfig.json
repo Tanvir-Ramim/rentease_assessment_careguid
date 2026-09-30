@@ -1,8 +1,8 @@
 {
   "compilerOptions": {
+    "rootDir": "./src",
     "outDir": "./dist",
-    "module": "ESNext",
-    "moduleResolution": "bundler",
+    "module": "CommonJS",
     "target": "ES2023",
     "types": ["node"],
     "sourceMap": true,
